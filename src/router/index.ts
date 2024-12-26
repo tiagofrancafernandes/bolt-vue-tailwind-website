@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../pages/Home.vue';
-// import About from '../pages/About.vue';
-import Contact from '../pages/Contact.vue';
-import BlogList from '../pages/BlogList.vue';
-import BlogPost from '../pages/BlogPost.vue';
-import DynamicPage from '../components/DynamicPage.vue';
+import Home from 'src/pages/Home.vue';
+// import About from 'src/pages/About.vue';
+import Contact from 'src/pages/Contact.vue';
+import BlogList from 'src/pages/BlogList.vue';
+import BlogPost from 'src/pages/BlogPost.vue';
+import DynamicPage from 'src/components/DynamicPage.vue';
+import NotFoundPage from 'src/pages/NotFoundPage.vue';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -13,6 +14,11 @@ const router = createRouter({
             path: '/',
             name: 'home',
             component: Home,
+        },
+        {
+            path: '/index.html',
+            name: 'dynamic_home',
+            component: DynamicPage,
         },
         //
         // {
@@ -51,6 +57,25 @@ const router = createRouter({
             name: 'portfolio',
             component: DynamicPage,
         },
+        {
+            path: '/p/:pathMatch(.*)*',
+            name: 'unamed_page',
+            component: DynamicPage,
+        },
+        {
+            path: '/page/:pathMatch(.*)*',
+            name: 'unamed_page2',
+            component: DynamicPage,
+        },
+        // {
+        //     path: '*',
+        //     name: 'other_pages',
+        //     component: DynamicPage,
+        // },
+        { path: '/:pathMatch(.*)*', name: 'other_pages', component: DynamicPage },
+        { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundPage },
+        // if you omit the last `*`, the `/` character in params will be encoded when resolving or pushing
+        { path: '/:pathMatch(.*)', name: 'bad-not-found', component: NotFoundPage },
     ],
 });
 

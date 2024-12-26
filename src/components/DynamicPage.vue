@@ -7,8 +7,31 @@ import { trimSlash } from 'src/utils/url.ts';
 const route = useRoute();
 const { page, loading, error, fetchPage } = usePages();
 
+const getPageID = (value: any) => {
+    value = typeof value === 'string' ? value.trim() : 'not-found';
+
+    let pagesPrefix = ['/p/', '/pages/'];
+
+    for (let prefix of pagesPrefix) {
+        if (value.startsWith(prefix)) {
+            value = value.slice(prefix?.length);
+            return trimSlash(value as string);
+        }
+    }
+
+    return trimSlash(value as string);
+};
+
 const loadPage = async () => {
-    const slug = trimSlash(route.path as string);
+    let slug = ['/index.html'].includes(route.path) ? getPageID(route?.query?.path || null) : getPageID(route.path);
+
+    console.log({
+        slug: slug,
+        'route.path': route.path,
+        'route.query': route.query,
+        route: route,
+    });
+
     try {
         await fetchPage(slug);
     } catch (error) {

@@ -1,5 +1,65 @@
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  force = true
+from = "/api/*"
+to = "https://us-central1-netlify-intercom.cloudfunctions.net/readHeaders/:splat"
+status = 200
+force = true
+
+## This rule redirects to an external API, signing requests with a secret
+[[redirects]]
+from = "/search"
+to = "https://api.mysearch.com"
+status = 200
+force = true                     # COMMENT: ensure that we always redirect
+headers = { X-From = "Netlify" }
+signed = "API_SIGNATURE_TOKEN"
+
+[[redirects]]
+from = "/page/*"
+to = "/:splat"
+status = 301
+
+[[redirects]]
+from = "/api-ext2/*"
+to = "https://my-api.com/api/:splat"
+status = 301
+
+[[redirects]]
+from = "/api-ext/*"
+to = "/:splat"
+status = 301
+
+# [[redirects]]
+# from = "/*vite*"
+# to = "/:splat"
+# force = true
+# # query = {path = ":path"}
+# # status = 200
+# status = 301
+
+# [[redirects]]
+# from = "*"
+# to = "/index.html?path=:splat"
+# force = false
+# conditions = {Language = ["en"], Country = ["US"], Role = ["admin"]}
+# # query = {path = ":path"}
+# # status = 200
+# status = 301
+
+[[redirects]]
+from = "/*"
+to = "/index.html/:splat"
+status = 200
+
+[[redirects]]
+from = "/blog/*"
+to = "/index.html?path=blog/:splat"
+status = 200
+
+# [functions]
+# name = "handle-all-requests"
+# path = "functions/handle-all-requests.js"
+# runtime = "nodejs18"
+
+[functions]
+[functions.handle-all-requests]
+external_node_modules = ["handler"]

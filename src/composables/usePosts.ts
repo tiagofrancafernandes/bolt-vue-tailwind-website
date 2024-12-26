@@ -2,6 +2,13 @@ import { ref } from 'vue';
 import type { Post } from '../types/blog';
 import { cache } from '../services/cache';
 
+const fetchDefaultOptions = {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    // mode: 'no-cors',
+    // mode: 'cors',
+};
+
 export function usePosts() {
     const posts = ref<Post[]>([]);
     const loading = ref(false);
@@ -22,8 +29,8 @@ export function usePosts() {
 
         try {
             const response = await fetch(`https://jsonplaceholder.typicode.com/posts?_page=${page}&_limit=${limit}`, {
+                ...fetchDefaultOptions,
                 method: 'GET',
-                // mode: 'no-cors',
             });
             const data = await response.json();
             cache.set(cacheKey, data);
@@ -49,8 +56,8 @@ export function usePosts() {
 
         try {
             const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
+                ...fetchDefaultOptions,
                 method: 'GET',
-                mode: 'no-cors',
             });
             const data = await response.json();
             cache.set(cacheKey, data);

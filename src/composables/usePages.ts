@@ -27,7 +27,10 @@ export function usePages() {
             const data = await fetchPageData(slug);
             if (data.success) {
                 page.value = data;
-            } else {
+                error.value = null;
+            }
+
+            if (data?.status === 404) {
                 error.value = 'Page not found';
                 page.value = null;
             }

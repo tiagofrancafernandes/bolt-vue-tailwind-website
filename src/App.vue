@@ -16,7 +16,7 @@ globalThis._cache = cache;
 
 const preloadMainPages = async (awaitMode = false) => {
     for (let pageSlug of pagesToPreload) {
-        console.log(`pageSlug: ${pageSlug}")`);
+        console.log(`pageSlug: "${pageSlug}"`);
 
         if (preloadingPages.includes(pageSlug)) {
             return;
