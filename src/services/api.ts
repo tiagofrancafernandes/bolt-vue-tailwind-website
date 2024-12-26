@@ -1,16 +1,17 @@
 import { buildUrl } from '../utils/url';
 import { cache } from './cache';
+import { PageData } from '@/composables/usePages.ts';
 
-const API_BASE_URL = 'https://admindemo.elmapicms.com/api/04b26added8747db9c25c29ddf3450e7/pages';
-const API_TOKEN = 'zt4mfjCzgBcX4n1MzGvCtbpzX6fiPg8ZOLiaugDF';
+export const API_BASE_URL = 'https://admindemo.elmapicms.com/api/04b26added8747db9c25c29ddf3450e7/pages';
+export const API_TOKEN = 'zt4mfjCzgBcX4n1MzGvCtbpzX6fiPg8ZOLiaugDF';
 
-export async function fetchPageData(slug: string) {
+export async function fetchPageData(slug: string): Promise<PageData> {
     if (!slug || typeof slug !== 'string') {
         throw new Error('Invalid slug provided');
     }
 
     const cacheKey = `page-${slug}`;
-    const cachedData = cache.get(cacheKey);
+    const cachedData: PageData = cache.get(cacheKey);
 
     if (cachedData) {
         return cachedData;

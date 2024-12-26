@@ -1,5 +1,6 @@
 import { ref } from 'vue';
-import { fetchPageData } from '../services/api';
+import { fetchPageData } from '@/services/api';
+import { trimSlash } from 'src/utils/url.ts';
 
 export interface PageData {
     title: string;
@@ -16,6 +17,8 @@ export function usePages() {
 
     const fetchPage = async (slug: string) => {
         if (loading.value) return; // Prevent multiple simultaneous requests
+
+        slug = trimSlash(slug);
 
         loading.value = true;
         error.value = null;

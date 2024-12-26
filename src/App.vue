@@ -1,31 +1,67 @@
 <script setup lang="ts">
 import { onMounted, onBeforeMount, watch, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { usePages } from './composables/usePages';
+import { usePages } from '@/composables/usePages';
+import { cache } from '@/services/cache.ts';
+import { fetchPageData } from '@/services/api.ts';
+import { trimSlash } from 'src/utils/url.ts';
 
 import NavBar from './components/NavBar.vue';
 
 const pagesToPreload = ['about-us', 'privacy', 'portfolio'];
-const pagesPreloaded = ref(false);
+let preloadingPages = [];
 const route = useRoute();
-const { fetchPage } = usePages();
 
-const routePathChanged = async (path) => {
-    if (pagesPreloaded.value) {
-        return;
-    }
+globalThis._cache = cache;
 
-    console.log('routePathChanged', path, pagesPreloaded.value);
+const preloadMainPages = async (awaitMode = false) => {
     for (let pageSlug of pagesToPreload) {
-        console.log(`Fetching ${pageSlug}`);
-        await fetchPage(pageSlug);
-    }
+        console.log(`pageSlug: ${pageSlug}")`);
 
-    pagesPreloaded.value = true;
+        if (preloadingPages.includes(pageSlug)) {
+            return;
+        }
+
+        if (cache.has(`page-${pageSlug}`)) {
+            continue;
+        }
+
+        let _line = '-'.repeat(30);
+        console.log(`${_line}\nFetching ${pageSlug}\n${_line}\n`);
+
+        preloadingPages.push(pageSlug);
+
+        try {
+            if (awaitMode) {
+                await fetchPageData(pageSlug);
+                continue;
+            }
+
+            fetchPageData(pageSlug);
+            preloadingPages = preloadingPages.filter((i) => i !== pageSlug);
+        } catch (e: any) {
+            console.error(e);
+        } finally {
+            preloadingPages = preloadingPages.filter((i) => i !== pageSlug);
+        }
+    }
 };
 
+const syncPreloadPages = () => {
+    preloadMainPages(false);
+};
+
+const asyncPreloadPages = async () => {
+    await preloadMainPages(true);
+};
+
+onBeforeMount(async () => {
+    preloadingPages.unshift(trimSlash(route.path));
+    syncPreloadPages();
+});
+
 // Watch for route changes
-watch(() => route.path, routePathChanged, { immediate: true });
+watch(() => route.path, asyncPreloadPages, { immediate: true });
 </script>
 
 <template>

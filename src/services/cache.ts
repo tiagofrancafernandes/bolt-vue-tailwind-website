@@ -31,10 +31,23 @@ export class Cache {
         return item.data as T;
     }
 
+    has(key: string): boolean {
+        const item = this.storage.get(key);
+        if (!item) return false;
+
+        const isExpired = Date.now() - item.timestamp > this.TTL;
+        if (isExpired) {
+            this.storage.delete(key);
+            return false;
+        }
+
+        return true;
+    }
+
     clear(): void {
         this.storage.clear();
     }
 }
 
 // Create a singleton instance
-export const cache = new Cache(5); // 5 minutes TTL
+export const cache = new Cache(10); // X minutes TTL

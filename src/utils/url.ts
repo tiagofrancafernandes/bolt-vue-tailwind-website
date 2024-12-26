@@ -20,3 +20,8 @@ export function buildUrl(baseUrl: string, params: Record<string, string>): strin
 
     return new URL(res);
 }
+
+export const trimSlash = (str: any) => {
+    str = typeof str === 'string' ? str : '';
+    return str.replaceAll(/^([\/]){1,}/g, '').replaceAll(/([\/]){1,}$/g, '');
+};

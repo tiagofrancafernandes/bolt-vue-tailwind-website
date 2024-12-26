@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import { onMounted, onBeforeMount, watch } from 'vue';
+import { onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { usePages } from '../composables/usePages';
+import { trimSlash } from 'src/utils/url.ts';
 
 const route = useRoute();
 const { page, loading, error, fetchPage } = usePages();
-
-const trimSlash = (str: any) => {
-    str = typeof str === 'string' ? str : '';
-    return str.replaceAll(/^([\/]){1,}/g, '').replaceAll(/([\/]){1,}$/g, '');
-};
 
 const loadPage = async () => {
     const slug = trimSlash(route.path as string);
